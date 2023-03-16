@@ -6,7 +6,7 @@
 /*   By: sqiu <sqiu@student.42vienna.com>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/09 11:17:29 by sqiu              #+#    #+#             */
-/*   Updated: 2023/03/09 16:36:47 by sqiu             ###   ########.fr       */
+/*   Updated: 2023/03/16 14:40:54 by sqiu             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,6 +19,7 @@
 # include <stdio.h>
 # include <stdlib.h>
 # include <unistd.h>
+# include <stdbool.h>
 # include <signal.h>				/* required to kill processes*/
 # include <sys/wait.h>				/* required for wait calls */
 # include "../libft/ft_printf/ft_printf.h"
@@ -28,9 +29,24 @@
 
 /* ====== STRUCTS ====== */
 
+typedef struct s_cmd
+{
+	char	*cmd;
+	char	**arg;
+	int		fd[2];
+}	t_cmd;
+
 typedef struct s_meta
 {
-	char	*buf;
+	char	*infile;
+	char	*outfile;
+	int		fd_in;
+	int		fd_out;
+	bool	here_doc;
+	int		cmd_num;
+	char	*the_path;
+	char	**cmd_paths;
+	t_cmd	*cmds;
 }	t_meta;
 
 #endif

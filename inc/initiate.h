@@ -1,32 +1,22 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   error.h                                            :+:      :+:    :+:   */
+/*   initiate.h                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: sqiu <sqiu@student.42vienna.com>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/03/09 11:13:43 by sqiu              #+#    #+#             */
-/*   Updated: 2023/03/16 17:33:58 by sqiu             ###   ########.fr       */
+/*   Created: 2023/03/16 10:42:13 by sqiu              #+#    #+#             */
+/*   Updated: 2023/03/16 14:30:34 by sqiu             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef ERROR_H
-# define ERROR_H
-
-/* ====== LIBRARIES ====== */
-
-# include <errno.h>
-
-/* ====== DEFINITIONS ====== */
-
-# define ERR_MEM "Memory allocation failed. :/"
-# define ERR_OPEN "File failed to open. (⌣̩̩́_⌣̩̩̀)"
-# define ERR_ARGC "Insufficient arguments. You disappoint me. (~_~;)"
-# define ERR_PATH "Retrieval of cmd paths failed. (._.)"
+#ifndef INITIATE_H
+# define INITIATE_H
 
 /* ====== FUNCTIONS ====== */
 
-void	terminate(char *s);
-int		input_check(char *s, t_meta *meta);
+void	initiate(t_meta *meta, char **argv, int argc, char **envp);
+void	open_infile(t_meta *meta, char **argv);
+void	open_outfile(t_meta *meta, char *s);
 
 #endif
