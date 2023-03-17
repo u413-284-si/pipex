@@ -6,7 +6,7 @@
 /*   By: sqiu <sqiu@student.42vienna.com>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/09 11:17:29 by sqiu              #+#    #+#             */
-/*   Updated: 2023/03/16 14:40:54 by sqiu             ###   ########.fr       */
+/*   Updated: 2023/03/17 14:11:10 by sqiu             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,6 +47,8 @@ typedef struct s_meta
 	char	*the_path;
 	char	**cmd_paths;
 	t_cmd	*cmds;
+	int		i;
+	pid_t	pid;
 }	t_meta;
 
 #endif

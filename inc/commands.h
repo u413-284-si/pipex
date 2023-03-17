@@ -1,22 +1,24 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   infile.c                                           :+:      :+:    :+:   */
+/*   commands.h                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: sqiu <sqiu@student.42vienna.com>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/03/09 16:38:22 by sqiu              #+#    #+#             */
-/*   Updated: 2023/03/09 16:42:32 by sqiu             ###   ########.fr       */
+/*   Created: 2023/03/17 11:38:22 by sqiu              #+#    #+#             */
+/*   Updated: 2023/03/17 18:40:20 by sqiu             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../inc/infile.h"
-#include "../inc/pipex.h"
+#ifndef COMMANDS_H
+# define COMMANDS_H
 
-int	read_infile(char *infile)
-{
-	int	fd;
+/* ====== FUNCTIONS ====== */
 
-	fd = open(infile, O_RDONLY);
-	return (fd);
-}
+void	exec_cmd(t_meta *meta, char **argv, char **envp);
+char	*get_cmd(char *cmd, char **cmd_paths);
+void	create_child(t_meta *meta, char **argv, char **envp);
+void	replace_fd(int input_fd, int output_fd);
+void	plug_pipes(t_meta *meta);
+
+#endif

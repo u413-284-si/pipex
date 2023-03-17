@@ -6,7 +6,7 @@
 /*   By: sqiu <sqiu@student.42vienna.com>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/09 11:30:40 by sqiu              #+#    #+#             */
-/*   Updated: 2023/03/16 17:28:37 by sqiu             ###   ########.fr       */
+/*   Updated: 2023/03/17 11:40:58 by sqiu             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,10 +21,7 @@ int	main(int argc, char **argv, char **envp)
 	if (argc < input_check(argv[1], &meta))
 		terminate(ERR_ARGC);
 	initiate(&meta, argv, argc, envp);
-	i = 1;
-	while (++i < argc - 1)
-		process_cmd(argv[i]);
-	open_outfile(argv[i + 1]);
+	exec_cmd(&meta, argv, envp);
 	return (0);
 }
 

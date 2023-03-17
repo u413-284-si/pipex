@@ -6,13 +6,17 @@
 /*   By: sqiu <sqiu@student.42vienna.com>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/16 10:42:02 by sqiu              #+#    #+#             */
-/*   Updated: 2023/03/16 17:26:06 by sqiu             ###   ########.fr       */
+/*   Updated: 2023/03/17 12:28:28 by sqiu             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../inc/initiate.h"
 #include "../inc/pipex.h"
 #include "../inc/error.h"
+
+/* This function initiates the program by opening the in-/outfile (files
+to be read from and written to), allocating the required memory space
+for the commands to be processed and retrieving the command paths. */
 
 void	initiate(t_meta *meta, char **argv, int argc, char **envp)
 {
@@ -25,8 +29,11 @@ void	initiate(t_meta *meta, char **argv, int argc, char **envp)
 	meta->the_path = get_path(envp);
 	meta->cmd_paths = ft_split(meta->the_path, ':');
 	if (!meta->cmd_paths)
-		abort_mission(meta);
+		abort_mission(meta, ERR_PATH);
 }
+
+/* This function opens the given file ready to be read from. If
+here_doc is specified,  */
 
 void	open_infile(t_meta *meta, char **argv)
 {
@@ -38,6 +45,11 @@ void	open_infile(t_meta *meta, char **argv)
 			terminate(ERR_OPEN);
 	}
 }
+
+/* This function opens the given file ready to be written to. If
+here_doc is specified, the text will be appended to already existing
+text in the file. Else the existing text will be replaced by the new
+input. */
 
 void	open_outfile(t_meta *meta, char *s)
 {
@@ -51,6 +63,9 @@ void	open_outfile(t_meta *meta, char *s)
 	if (meta->fd_out < 3)
 		terminate(ERR_OPEN);
 }
+
+/* This function searches for the PATH in the environment and returns
+it. */
 
 char	*get_path(char **envp)
 {

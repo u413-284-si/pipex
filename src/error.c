@@ -6,7 +6,7 @@
 /*   By: sqiu <sqiu@student.42vienna.com>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/09 11:13:31 by sqiu              #+#    #+#             */
-/*   Updated: 2023/03/16 17:34:14 by sqiu             ###   ########.fr       */
+/*   Updated: 2023/03/17 18:13:29 by sqiu             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,12 +47,44 @@ int	input_check(char *s, t_meta *meta)
 	}
 }
 
-void	abort_mission(t_meta *meta)
+/* This function closes all open file descriptors, frees allocated memory
+space in the heap and unlinks any files at the current point. It then
+gives out an error message and terminates the program. */
+
+void	abort_mission(t_meta *meta, char *s)
 {
 	if (meta->here_doc)
 		unlink(".heredoc_tmp");
 	close(meta->fd_in);
 	close(meta->fd_out);
 	free(meta->cmds);
-	terminate(ERR_PATH);
+	terminate(s);
+}
+
+/* This function frees the cmd_paths and calls 'abort_mission' upon an
+error. */
+
+void	no_senor(t_meta *meta, char *s)
+{
+	int	i;
+
+	i = -1;
+	while (meta->cmd_paths[++i])
+		free(meta->cmd_paths[i]);
+	free(meta->cmd_paths);
+	abort_mission(meta, s);
+}
+
+/* This function frees the arguments in the current command and 
+calls 'no senor' upon an error. */
+
+void	mamma_mia(t_meta *meta, char *s)
+{
+	int	i;
+
+	i = -1;
+	while (meta->cmds[meta->i].arg[++i])
+		free(meta->cmds[meta->i].arg[i]);
+	free(meta->cmds[meta->i].arg);
+	no_senor(meta, s);
 }
