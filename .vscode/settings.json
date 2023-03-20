@@ -1,6 +1,8 @@
 {
     "files.associations": {
         "pipex.h": "c",
-        "get_next_line_bonus.h": "c"
+        "get_next_line_bonus.h": "c",
+        "error.h": "c",
+        "cleanup.h": "c"
     }
 }

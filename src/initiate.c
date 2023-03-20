@@ -6,12 +6,12 @@
 /*   By: sqiu <sqiu@student.42vienna.com>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/16 10:42:02 by sqiu              #+#    #+#             */
-/*   Updated: 2023/03/17 12:28:28 by sqiu             ###   ########.fr       */
+/*   Updated: 2023/03/20 15:14:16 by sqiu             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../inc/initiate.h"
 #include "../inc/pipex.h"
+#include "../inc/initiate.h"
 #include "../inc/error.h"
 
 /* This function initiates the program by opening the in-/outfile (files

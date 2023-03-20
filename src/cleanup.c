@@ -1,24 +1,32 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   commands.h                                         :+:      :+:    :+:   */
+/*   cleanup.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: sqiu <sqiu@student.42vienna.com>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/03/17 11:38:22 by sqiu              #+#    #+#             */
-/*   Updated: 2023/03/20 15:13:40 by sqiu             ###   ########.fr       */
+/*   Created: 2023/03/20 11:53:10 by sqiu              #+#    #+#             */
+/*   Updated: 2023/03/20 15:15:45 by sqiu             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef COMMANDS_H
-# define COMMANDS_H
+#include "../inc/pipex.h"
+#include "../inc/cleanup.h"
 
-/* ====== FUNCTIONS ====== */
+/* This function closes remaining file descriptors and frees allocated 
+memory space. */
 
-void	exec_cmd(t_meta *meta, char **argv, char **envp);
-char	*get_cmd(char *cmd, char **cmd_paths);
-void	create_child(t_meta *meta, char **envp);
-void	replace_fd(int input_fd, int output_fd);
-void	plug_pipes(t_meta *meta);
+void	cleanup(t_meta *meta)
+{
+	int	i;
 
-#endif
+	if (meta->here_doc)
+		unlink(".heredoc_tmp");
+	close(meta->fd_in);
+	close(meta->fd_out);
+	free(meta->cmds);
+	i = -1;
+	while (meta->cmd_paths[++i])
+		free(meta->cmd_paths[i]);
+	free(meta->cmd_paths);
+}

@@ -3,10 +3,10 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: sqiu <marvin@42.fr>                        +#+  +:+       +#+         #
+#    By: sqiu <sqiu@student.42vienna.com>           +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/10/05 10:37:52 by sqiu              #+#    #+#              #
-#    Updated: 2022/11/17 12:37:03 by sqiu             ###   ########.fr        #
+#    Updated: 2023/03/20 15:44:05 by sqiu             ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -16,7 +16,7 @@ NAME	= libgnl.a
 SRC		= get_next_line_bonus.c get_next_line_utils_bonus.c
 OBJ 	= $(SRC:%.c=%.o)
 CC 		= cc
-FLAG 	= -Wall -Werror -Wextra
+CFLAGS 	= -Wall -Werror -Wextra
 OPTION 	= -c
 
 # Colors
@@ -36,20 +36,23 @@ WHITE = \033[0;97m
 all: $(NAME)
 
 $(NAME): $(OBJ)
-		@$(MAKE) all -C ../ft_printf
+		@$(MAKE) all --no-print-directory -C ../ft_printf
 		@cp ../ft_printf/libftprintf.a $@
 		@echo "$(YELLOW)Compiling: $^ $(DEF_COLOR)"
 		@ar -rcs $@ $^
-		@echo "$(GREEN)gnl compiled!$(DEF_COLOR)"
+		@echo "$(GREEN)gnl compiled!$(DEF_COLOR)\n"
+
+%.o:	 %.c 
+		@$(CC) $(CFLAGS) $(OPTION) $< -o $@
 
 clean: 
 		@rm -f $(OBJ)
 		@echo "$(BLUE)gnl object files cleaned!$(DEF_COLOR)"
 
-fclean:	clean
+fclean:
 		@rm -f $(NAME)
-		@echo "$(CYAN)gnl executable & object files cleaned!$(DEF_COLOR)"
+		@echo "$(CYAN)gnl executable cleaned!$(DEF_COLOR)"
 
-re:	fclean all
+re:	clean fclean all
 
 .PHONY:	all clean fclean re

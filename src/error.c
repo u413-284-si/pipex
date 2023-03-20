@@ -6,13 +6,12 @@
 /*   By: sqiu <sqiu@student.42vienna.com>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/09 11:13:31 by sqiu              #+#    #+#             */
-/*   Updated: 2023/03/17 18:13:29 by sqiu             ###   ########.fr       */
+/*   Updated: 2023/03/20 15:13:59 by sqiu             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../inc/error.h"
 #include "../inc/pipex.h"
-
+#include "../inc/error.h"
 
 /* This function terminates the program and displays an error message 
 according to the point in the program where the error happened. */

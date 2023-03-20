@@ -3,10 +3,10 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: sqiu <marvin@42.fr>                        +#+  +:+       +#+         #
+#    By: sqiu <sqiu@student.42vienna.com>           +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/10/05 10:37:52 by sqiu              #+#    #+#              #
-#    Updated: 2022/11/17 10:36:16 by sqiu             ###   ########.fr        #
+#    Updated: 2023/03/20 15:44:30 by sqiu             ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -18,7 +18,7 @@ SRC		= ft_printf.c check_flags.c print_tools.c print_char.c \
 		print_hex_tools.c print_heX.c print_adress.c print_tools_d.c
 OBJ 	= $(SRC:%.c=%.o)
 CC 		= cc
-FLAG 	= -Wall -Werror -Wextra
+CFLAGS 	= -Wall -Werror -Wextra
 OPTION 	= -c
 
 # Colors
@@ -35,23 +35,26 @@ WHITE = \033[0;97m
 
 #Rules
 
-all: $(NAME)
+all:		$(NAME)
 
-$(NAME): $(OBJ)
-	@echo "$(YELLOW)Compiling: $^ $(DEF_COLOR)"
-	@ar -rcs $@ $^
-	@echo "$(GREEN)ft_printf compiled!$(DEF_COLOR)"
+$(NAME): 	$(OBJ)
+			@echo "$(YELLOW)Compiling: $^ $(DEF_COLOR)"
+			@ar -rcs $@ $^
+			@echo "$(GREEN)ft_printf compiled!$(DEF_COLOR)\n"
+
+%.o:		%.c 
+			@$(CC) $(CFLAGS) $(OPTION) $< -o $@
 
 clean: 
-	@rm -f $(OBJ)
-	@echo "$(BLUE)ft_printf object files cleaned!$(DEF_COLOR)"
+			@rm -f $(OBJ)
+			@echo "$(BLUE)ft_printf object files cleaned!$(DEF_COLOR)"
 
-fclean:	clean
-	@rm -f $(NAME)	
-	@echo "$(CYAN)ft_printf executable & object files cleaned!$(DEF_COLOR)"
+fclean:
+			@rm -f $(NAME)	
+			@echo "$(CYAN)ft_printf executable cleaned!$(DEF_COLOR)"
 
-re:	fclean all
+re:			clean fclean all
 
-bonus:	all
+bonus:		all
 
 .PHONY:	all bonus clean fclean re

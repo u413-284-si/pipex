@@ -3,10 +3,10 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: sqiu <marvin@42.fr>                        +#+  +:+       +#+         #
+#    By: sqiu <sqiu@student.42vienna.com>           +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/10/05 10:37:52 by sqiu              #+#    #+#              #
-#    Updated: 2022/11/17 12:37:44 by sqiu             ###   ########.fr        #
+#    Updated: 2023/03/20 16:12:56 by sqiu             ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -50,26 +50,27 @@ WHITE = \033[0;97m
 all: $(NAME)
 
 $(NAME): $(OBJ) $(OBJB)
-		@$(MAKE) all -C ./gnl
+		@$(MAKE) all --no-print-directory -C ./gnl
 		@cp gnl/libgnl.a $@
 		@echo "$(YELLOW)Compiling: $^ $(DEF_COLOR)"
 		@ar rcs $@ $^
 		@echo "$(GREEN)libft compiled!$(DEF_COLOR)"
 
-#%.o:	 %.c 
-#		@$(CC) $(CFLAGS) $(OPTION) $(LDFLAGS) $< $(LDLIBS) -o $@
+%.o:	 %.c 
+		@$(CC) $(CFLAGS) $(OPTION) $< -o $@
 
 clean:
-		@$(MAKE) clean -C ./ft_printf
-		@$(MAKE) clean -C ./gnl
+		@$(MAKE) clean --no-print-directory -C ./ft_printf
+		@$(MAKE) clean --no-print-directory -C ./gnl
 		@rm -f $(OBJ) $(OBJB)
 		@echo "$(BLUE)libft object files cleaned!$(DEF_COLOR)"
-fclean: clean
-		@$(MAKE) fclean -C ./ft_printf
-		@$(MAKE) fclean -C ./gnl
-		@rm -f $(NAME)
-		@echo "$(CYAN)ft_printf executable & object files cleaned!$(DEF_COLOR)"
 
-re: fclean all
+fclean:
+		@$(MAKE) fclean --no-print-directory -C ./ft_printf
+		@$(MAKE) fclean --no-print-directory -C ./gnl
+		@rm -f $(NAME)
+		@echo "$(CYAN)libft executable cleaned!$(DEF_COLOR)"
+
+re: 	clean fclean all
 
 .PHONY: all clean fclean re

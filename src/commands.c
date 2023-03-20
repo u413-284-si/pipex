@@ -6,12 +6,12 @@
 /*   By: sqiu <sqiu@student.42vienna.com>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/17 11:38:13 by sqiu              #+#    #+#             */
-/*   Updated: 2023/03/17 18:39:44 by sqiu             ###   ########.fr       */
+/*   Updated: 2023/03/20 17:10:41 by sqiu             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../inc/commands.h"
 #include "../inc/pipex.h"
+#include "../inc/commands.h"
 #include "../inc/error.h"
 
 /* This function executes the commands by creating
@@ -45,12 +45,12 @@ void	exec_cmd(t_meta *meta, char **argv, char **envp)
 			mamma_mia(meta, ERR_CMDEX);
 		free(meta->cmds[meta->i].arg[0]);
 		meta->cmds[meta->i].arg[0] = meta->cmds[meta->i].cmd;
-		create_child(meta, argv, envp);
+		create_child(meta, envp);
 		i = -1;
 		while (meta->cmds[meta->i].arg[++i])
 			free(meta->cmds[meta->i].arg[i]);
-		free(meta->cmds[meta->i].arg);
-		free(meta->cmds[meta->i].cmd);
+		//free(meta->cmds[meta->i].arg);
+		//free(meta->cmds[meta->i].cmd);
 	}
 }
 
@@ -94,7 +94,7 @@ command in the chain.
 After assigning the fd, all fd in the child process are closed. 
 The command is then called and executed with the new stdin & stdout. */
 
-void	create_child(t_meta *meta, char **argv, char **envp)
+void	create_child(t_meta *meta, char **envp)
 {
 	meta->pid = fork();
 	if (meta->pid < 0)
@@ -111,6 +111,8 @@ void	create_child(t_meta *meta, char **argv, char **envp)
 		plug_pipes(meta);
 		execve(meta->cmds[meta->i].cmd, meta->cmds[meta->i].arg, envp);
 	}
+	else
+		wait(NULL);
 }
 
 /* This function replaces the standard file descriptors
