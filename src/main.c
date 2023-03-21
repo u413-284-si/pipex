@@ -6,7 +6,7 @@
 /*   By: sqiu <sqiu@student.42vienna.com>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/09 11:30:40 by sqiu              #+#    #+#             */
-/*   Updated: 2023/03/20 14:53:00 by sqiu             ###   ########.fr       */
+/*   Updated: 2023/03/21 17:36:13 by sqiu             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,6 +25,7 @@ int	main(int argc, char **argv, char **envp)
 	initiate(&meta, argv, argc, envp);
 	exec_cmd(&meta, argv, envp);
 	plug_pipes(&meta);
+	waitpid(-1, NULL, 0);
 	cleanup(&meta);
 	return (0);
 }

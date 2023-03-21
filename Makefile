@@ -6,7 +6,7 @@
 #    By: sqiu <sqiu@student.42vienna.com>           +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/10/05 10:37:52 by sqiu              #+#    #+#              #
-#    Updated: 2023/03/20 16:12:13 by sqiu             ###   ########.fr        #
+#    Updated: 2023/03/21 16:06:37 by sqiu             ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -102,6 +102,7 @@ re: 			fclean all
 valgr:			
 				@valgrind --leak-check=full\
 						--show-leak-kinds=all\
+						--trace-children=yes\
 						--log-file=valgrind-out.txt\
 						./pipex infile "ls -l" "wc -l" outfile
 				@less ./valgrind-out.txt
@@ -109,6 +110,7 @@ valgr:
 valgr_b:			
 				@valgrind --leak-check=full\
 						--show-leak-kinds=all\
+						--trace-children=yes\
 						--log-file=valgrind-out.txt\
 						./super_pipex infile "ls -l" "wc -l" outfile
 				@less ./valgrind-out.txt

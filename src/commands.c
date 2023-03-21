@@ -6,7 +6,7 @@
 /*   By: sqiu <sqiu@student.42vienna.com>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/17 11:38:13 by sqiu              #+#    #+#             */
-/*   Updated: 2023/03/20 17:10:41 by sqiu             ###   ########.fr       */
+/*   Updated: 2023/03/21 17:58:37 by sqiu             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,7 +23,14 @@
 	* 1 child process per command 
 
 Per each command itself and its arguments are retrieved and given to 
-the child process. */
+the child process. 
+
+The children are created in parallel as in following children are born
+even when the previous are still running. Due to the nature of pipes
+suspending any process trying to read from a pipe until sth. is written
+to it, the children implicitly wait for their predecessor to write
+input to the pipe and then continue their execution. No explicit
+wait call is therefore necessary in the parent process. */
 
 void	exec_cmd(t_meta *meta, char **argv, char **envp)
 {
@@ -49,8 +56,7 @@ void	exec_cmd(t_meta *meta, char **argv, char **envp)
 		i = -1;
 		while (meta->cmds[meta->i].arg[++i])
 			free(meta->cmds[meta->i].arg[i]);
-		//free(meta->cmds[meta->i].arg);
-		//free(meta->cmds[meta->i].cmd);
+		free(meta->cmds[meta->i].arg);
 	}
 }
 
@@ -110,9 +116,9 @@ void	create_child(t_meta *meta, char **envp)
 				meta->cmds[meta->i].fd[1]);
 		plug_pipes(meta);
 		execve(meta->cmds[meta->i].cmd, meta->cmds[meta->i].arg, envp);
+		ft_printf("Failed to execute command.\n");
+		exit(1);
 	}
-	else
-		wait(NULL);
 }
 
 /* This function replaces the standard file descriptors

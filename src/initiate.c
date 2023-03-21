@@ -6,7 +6,7 @@
 /*   By: sqiu <sqiu@student.42vienna.com>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/16 10:42:02 by sqiu              #+#    #+#             */
-/*   Updated: 2023/03/20 15:14:16 by sqiu             ###   ########.fr       */
+/*   Updated: 2023/03/21 18:59:03 by sqiu             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,6 +44,8 @@ void	open_infile(t_meta *meta, char **argv)
 		if (meta->fd_in < 3)
 			terminate(ERR_OPEN);
 	}
+	else
+		here_doc(meta, argv[2]);
 }
 
 /* This function opens the given file ready to be written to. If
@@ -72,4 +74,33 @@ char	*get_path(char **envp)
 	while (ft_strncmp(*envp, "PATH", 4))
 		envp++;
 	return (*envp + 5);
+}
+
+void	here_doc(t_meta *meta, char *s)
+{
+	int		fd;
+	char	*buf;
+
+	fd = open(".heredoc_tmp", O_CREAT | O_WRONLY | O_TRUNC, 0644);
+	if (fd < 3)
+		terminate(ERR_HEREDOC);
+	while (1)
+	{
+		write(1, "heredoc> ", 9);
+		if (get_next_line(0) < 0)
+			exit(1);
+ 		//if (/* condition */)
+			//break ; 
+		write(fd, buf, ft_strlen(buf));
+		write(fd, "\n", 1);
+		free(buf);
+	}
+	free(buf);
+	close(fd);
+	meta->fd_in = open(".heredoc_tmp", O_RDONLY);
+	if (meta->fd_in < 3)
+	{
+		unlink(".heredoc_tmp");
+		terminate(ERR_HEREDOC);
+	}
 }
