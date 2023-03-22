@@ -6,7 +6,7 @@
 /*   By: sqiu <sqiu@student.42vienna.com>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/09 11:13:31 by sqiu              #+#    #+#             */
-/*   Updated: 2023/03/20 15:13:59 by sqiu             ###   ########.fr       */
+/*   Updated: 2023/03/22 12:19:08 by sqiu             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,7 +53,7 @@ gives out an error message and terminates the program. */
 void	abort_mission(t_meta *meta, char *s)
 {
 	if (meta->here_doc)
-		unlink(".heredoc_tmp");
+		unlink(".tmp_heredoc");
 	close(meta->fd_in);
 	close(meta->fd_out);
 	free(meta->cmds);

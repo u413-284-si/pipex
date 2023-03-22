@@ -6,7 +6,7 @@
 /*   By: sqiu <sqiu@student.42vienna.com>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/20 11:53:20 by sqiu              #+#    #+#             */
-/*   Updated: 2023/03/20 15:17:00 by sqiu             ###   ########.fr       */
+/*   Updated: 2023/03/22 13:27:54 by sqiu             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,5 +16,6 @@
 /* ====== FUNCTIONS ====== */
 
 void	cleanup(t_meta *meta);
+void	unlink_heredoc(char *s);
 
 #endif

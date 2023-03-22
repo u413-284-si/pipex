@@ -6,13 +6,14 @@
 /*   By: sqiu <sqiu@student.42vienna.com>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/16 10:42:02 by sqiu              #+#    #+#             */
-/*   Updated: 2023/03/21 18:59:03 by sqiu             ###   ########.fr       */
+/*   Updated: 2023/03/22 19:26:54 by sqiu             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../inc/pipex.h"
 #include "../inc/initiate.h"
 #include "../inc/error.h"
+#include "../inc/cleanup.h"
 
 /* This function initiates the program by opening the in-/outfile (files
 to be read from and written to), allocating the required memory space
@@ -76,31 +77,33 @@ char	*get_path(char **envp)
 	return (*envp + 5);
 }
 
+/* This function creates a heredoc file to which the stdin input is written
+until the DELIMITER is given. It then opens the heredoc file for reading
+for the following command. */
+
 void	here_doc(t_meta *meta, char *s)
 {
 	int		fd;
 	char	*buf;
 
-	fd = open(".heredoc_tmp", O_CREAT | O_WRONLY | O_TRUNC, 0644);
+	fd = open(".tmp_heredoc", O_CREAT | O_WRONLY | O_TRUNC, 0644);
 	if (fd < 3)
 		terminate(ERR_HEREDOC);
 	while (1)
 	{
 		write(1, "heredoc> ", 9);
-		if (get_next_line(0) < 0)
-			exit(1);
- 		//if (/* condition */)
-			//break ; 
+		buf = get_next_line(0);
+		if (!buf)
+			unlink_heredoc(ERR_GNL);
+		if (ft_strncmp(s, buf, ft_strlen(s)) == 0)
+			break ;
 		write(fd, buf, ft_strlen(buf));
-		write(fd, "\n", 1);
+		//write(fd, "\n", 1);
 		free(buf);
 	}
 	free(buf);
 	close(fd);
-	meta->fd_in = open(".heredoc_tmp", O_RDONLY);
+	meta->fd_in = open(".tmp_heredoc", O_RDONLY);
 	if (meta->fd_in < 3)
-	{
-		unlink(".heredoc_tmp");
-		terminate(ERR_HEREDOC);
-	}
+		unlink_heredoc(ERR_HEREDOC);
 }
