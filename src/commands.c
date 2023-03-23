@@ -6,13 +6,15 @@
 /*   By: sqiu <sqiu@student.42vienna.com>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/17 11:38:13 by sqiu              #+#    #+#             */
-/*   Updated: 2023/03/21 17:58:37 by sqiu             ###   ########.fr       */
+/*   Updated: 2023/03/23 16:16:53 by sqiu             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../inc/pipex.h"
 #include "../inc/commands.h"
 #include "../inc/error.h"
+#include "../inc/cleanup.h"
+#include "../inc/children.h"
 
 /* This function executes the commands by creating
 
@@ -81,7 +83,10 @@ char	*get_cmd(char *cmd, char **cmd_paths)
 			rtrn = ft_strjoin(tmp, cmd);
 			free(tmp);
 			if (access(rtrn, X_OK) == 0)
+			{
+				errno = 0;
 				return (rtrn);
+			}
 			free(rtrn);
 			cmd_paths++;
 		}
@@ -108,16 +113,16 @@ void	create_child(t_meta *meta, char **envp)
 	else if (meta->pid == 0)
 	{
 		if (meta->i == 0)
-			replace_fd(meta->fd_in, meta->cmds[meta->i].fd[1]);
+			firstborn(meta, envp);
 		else if (meta->i == meta->cmd_num - 1)
-			replace_fd(meta->cmds[meta->i - 1].fd[0], meta->fd_out);
+			lastborn(meta, envp);
 		else
-			replace_fd(meta->cmds[meta->i - 1].fd[0], \
-				meta->cmds[meta->i].fd[1]);
-		plug_pipes(meta);
-		execve(meta->cmds[meta->i].cmd, meta->cmds[meta->i].arg, envp);
-		ft_printf("Failed to execute command.\n");
-		exit(1);
+			middle_child(meta, envp);
+	}
+	if (waitpid(meta->pid, NULL, WNOHANG) < 0)
+	{
+		pipinator(meta);
+		mamma_mia(meta, ERR_WAIT);
 	}
 }
 
@@ -126,25 +131,14 @@ void	create_child(t_meta *meta, char **envp)
 * fd 0 (for system stdinput) with input_fd
 * fd 1 (for system stdoutput) with output_fd
 
-allowing data to be read and written to different files. */
+allowing data to be read and written to different files.
+The input and output fds are closed after transfering their
+file description to stdin and stdout respectively. */
 
 void	replace_fd(int input_fd, int output_fd)
 {
-	dup2(input_fd, 0);
-	dup2(output_fd, 1);
-}
-
-/* This function closes all pipe ends (= file descriptors) of the
-created pipes. */
-
-void	plug_pipes(t_meta *meta)
-{
-	int	i;
-
-	i = -1;
-	while (++i < meta->cmd_num - 1)
-	{
-		close(meta->cmds[i].fd[0]);
-		close(meta->cmds[i].fd[1]);
-	}
+	if (dup2(input_fd, 0) < 0)
+		terminate(ERR_DUP);
+	if (dup2(output_fd, 1) < 0)
+		terminate(ERR_DUP);
 }

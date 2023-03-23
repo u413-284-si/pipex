@@ -6,12 +6,13 @@
 /*   By: sqiu <sqiu@student.42vienna.com>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/09 11:13:31 by sqiu              #+#    #+#             */
-/*   Updated: 2023/03/22 12:19:08 by sqiu             ###   ########.fr       */
+/*   Updated: 2023/03/23 11:04:26 by sqiu             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../inc/pipex.h"
 #include "../inc/error.h"
+#include "../inc/cleanup.h"
 
 /* This function terminates the program and displays an error message 
 according to the point in the program where the error happened. */
@@ -54,8 +55,8 @@ void	abort_mission(t_meta *meta, char *s)
 {
 	if (meta->here_doc)
 		unlink(".tmp_heredoc");
-	close(meta->fd_in);
-	close(meta->fd_out);
+	do_close(meta->fd_in);
+	do_close(meta->fd_out);
 	free(meta->cmds);
 	terminate(s);
 }

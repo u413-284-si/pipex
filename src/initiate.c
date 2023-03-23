@@ -6,7 +6,7 @@
 /*   By: sqiu <sqiu@student.42vienna.com>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/16 10:42:02 by sqiu              #+#    #+#             */
-/*   Updated: 2023/03/22 19:26:54 by sqiu             ###   ########.fr       */
+/*   Updated: 2023/03/23 17:26:24 by sqiu             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,7 +43,7 @@ void	open_infile(t_meta *meta, char **argv)
 		meta->infile = argv[1];
 		meta->fd_in = open(meta->infile, O_RDONLY);
 		if (meta->fd_in < 3)
-			terminate(ERR_OPEN);
+			write(2, "noopen", 6);
 	}
 	else
 		here_doc(meta, argv[2]);
@@ -91,18 +91,17 @@ void	here_doc(t_meta *meta, char *s)
 		terminate(ERR_HEREDOC);
 	while (1)
 	{
-		write(1, "heredoc> ", 9);
+		write(1, "pipe heredoc> ", 14);
 		buf = get_next_line(0);
 		if (!buf)
 			unlink_heredoc(ERR_GNL);
 		if (ft_strncmp(s, buf, ft_strlen(s)) == 0)
 			break ;
 		write(fd, buf, ft_strlen(buf));
-		//write(fd, "\n", 1);
 		free(buf);
 	}
 	free(buf);
-	close(fd);
+	do_close(fd);
 	meta->fd_in = open(".tmp_heredoc", O_RDONLY);
 	if (meta->fd_in < 3)
 		unlink_heredoc(ERR_HEREDOC);

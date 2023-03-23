@@ -6,7 +6,7 @@
 #    By: sqiu <sqiu@student.42vienna.com>           +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/10/05 10:37:52 by sqiu              #+#    #+#              #
-#    Updated: 2023/03/21 16:06:37 by sqiu             ###   ########.fr        #
+#    Updated: 2023/03/23 17:13:22 by sqiu             ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -24,13 +24,13 @@ DEBUG		= -g
 CC 			= cc
 
 INCDIR		= ./inc/
-INCLIST		= pipex.h cleanup.h commands.h error.h initiate.h
+INCLIST		= pipex.h children.h cleanup.h commands.h error.h initiate.h
 INCLIST_B	= pipex.h error.h
 INC			= $(addprefix ${INCDIR}, ${INCLIST})
 INC_B		= $(addprefix ${INCDIR}, ${INCLIST_B})
 
 SRCDIR		= ./src/
-SRCLIST		= cleanup.c commands.c error.c initiate.c main.c 
+SRCLIST		= children.c cleanup.c commands.c error.c initiate.c main.c 
 SRCLIST_B	= error.c 
 SRC			= $(addprefix ${SRCDIR}, ${SRCLIST})
 SRC_B		= $(addprefix ${SRCDIR}, ${SRCLIST_B})
@@ -66,7 +66,7 @@ WHITE = \033[1;97m
 
 all:			$(NAME)
 
-bonus:			$(BONUSNAME)
+bonus:			all
 
 $(NAME):		$(OBJDIR) $(OBJ)
 				@echo "\n$(MAGENTA)Compiling: $@ $(DEF_COLOUR)\n"
@@ -104,7 +104,7 @@ valgr:
 						--show-leak-kinds=all\
 						--trace-children=yes\
 						--log-file=valgrind-out.txt\
-						./pipex infile "ls -l" "wc -l" outfile
+						./pipex infile "grep a1" "wc" "wc -l" outfile
 				@less ./valgrind-out.txt
 
 valgr_b:			
@@ -116,3 +116,10 @@ valgr_b:
 				@less ./valgrind-out.txt
 
 .PHONY: 		all bonus clean fclean re valgr valgr_b
+
+#Manual tests
+# ./pipex infile "grep a1" "wc" "wc -l" outfile
+#./pipex infile "grep a1" "wc" "wc -l" outfile; echo $?; cat outfile; rm outfile
+
+#< infile grep a1 | wc | wc -l > outfile; echo $?; cat outfile; rm outfile
+
