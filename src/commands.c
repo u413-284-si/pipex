@@ -6,7 +6,7 @@
 /*   By: sqiu <sqiu@student.42vienna.com>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/17 11:38:13 by sqiu              #+#    #+#             */
-/*   Updated: 2023/03/23 16:16:53 by sqiu             ###   ########.fr       */
+/*   Updated: 2023/03/24 16:41:12 by sqiu             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -119,11 +119,23 @@ void	create_child(t_meta *meta, char **envp)
 		else
 			middle_child(meta, envp);
 	}
-	if (waitpid(meta->pid, NULL, WNOHANG) < 0)
+	momma_wait(meta);
+}
+
+/* This function makes the parent process wait for its child processes and
+retrieve their exit status after exiting to free the kernel. */
+
+void	momma_wait(t_meta *meta)
+{
+	int	stat;
+
+	if (waitpid(meta->pid, &stat, WNOHANG) < 0)
 	{
 		pipinator(meta);
 		mamma_mia(meta, ERR_WAIT);
 	}
+	if (WIFEXITED(stat))
+		meta->exitcode = WEXITSTATUS(stat);
 }
 
 /* This function replaces the standard file descriptors

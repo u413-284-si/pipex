@@ -6,7 +6,7 @@
 /*   By: sqiu <sqiu@student.42vienna.com>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/20 11:53:10 by sqiu              #+#    #+#             */
-/*   Updated: 2023/03/23 16:59:05 by sqiu             ###   ########.fr       */
+/*   Updated: 2023/03/24 19:24:20 by sqiu             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,8 +46,9 @@ if the closing failed. */
 
 void	do_close(int fd)
 {
-	if (close(fd) < 0)
-		terminate(ERR_CLOSE);
+	if (fd >= 0)
+		if (close(fd) < 0)
+			terminate(ERR_CLOSE);
 }
 
 /* This function closes all pipes which have been created. 

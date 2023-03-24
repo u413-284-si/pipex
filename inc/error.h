@@ -6,7 +6,7 @@
 /*   By: sqiu <sqiu@student.42vienna.com>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/09 11:13:43 by sqiu              #+#    #+#             */
-/*   Updated: 2023/03/23 17:50:27 by sqiu             ###   ########.fr       */
+/*   Updated: 2023/03/24 16:25:33 by sqiu             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,12 +32,14 @@
 # define ERR_CLOSE "Could not close file.  (￣▽￣)"
 # define ERR_DUP "Duplication of fd failed. Fanculo. (꘠_꘠)"
 # define ERR_WAIT "While waiting for my child sth went wrong. ◎(╥ꞈ╥)◎"
-# define ERR_LAST "Execution of lastborn failed. "
+# define ERR_LAST "Execution of lastborn failed. (*︵*)"
+# define ERR_FIRST "Execution of firstborn failed. (◞╭╮◟)"
+# define ERR_MID "Execution of midchild failed. 凸(◡ﮧ◡)凸"
+# define ERR_FD "File descriptor invalid. (ง◎‸◎)ง"
 
 /* ====== FUNCTIONS ====== */
 
 void	terminate(char *s);
-int		input_check(char *s, t_meta *meta);
 void	abort_mission(t_meta *meta, char *s);
 void	no_senor(t_meta *meta, char *s);
 void	mamma_mia(t_meta *meta, char *s);

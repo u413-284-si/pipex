@@ -1,24 +1,21 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   initiate.h                                         :+:      :+:    :+:   */
+/*   utils.h                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: sqiu <sqiu@student.42vienna.com>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/03/16 10:42:13 by sqiu              #+#    #+#             */
-/*   Updated: 2023/03/24 15:19:21 by sqiu             ###   ########.fr       */
+/*   Created: 2023/03/24 15:02:48 by sqiu              #+#    #+#             */
+/*   Updated: 2023/03/24 15:09:01 by sqiu             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef INITIATE_H
-# define INITIATE_H
+#ifndef UTILS_H
+# define UTILS_H
 
 /* ====== FUNCTIONS ====== */
 
-void	initiate(t_meta *meta, char **argv, int argc, char **envp);
-void	init_var(t_meta *meta);
-void	open_infile(t_meta *meta, char **argv);
-void	open_outfile(t_meta *meta, char *s);
-void	here_doc(t_meta *meta, char *s);
+char	*get_path(char **envp);
+int		input_check(char *s, t_meta *meta);
 
 #endif

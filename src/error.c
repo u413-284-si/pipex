@@ -6,7 +6,7 @@
 /*   By: sqiu <sqiu@student.42vienna.com>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/09 11:13:31 by sqiu              #+#    #+#             */
-/*   Updated: 2023/03/23 11:04:26 by sqiu             ###   ########.fr       */
+/*   Updated: 2023/03/24 15:10:24 by sqiu             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,27 +24,6 @@ void	terminate(char *s)
 	else
 		perror(s);
 	exit(1);
-}
-
-/* This function verifies if the first argument is 'here_doc' and sets the
-corresponding bool accordingly and returns the expected minimal number of
-arguments to the program (including the program name itself). */
-
-int	input_check(char *s, t_meta *meta)
-{
-	int	len;
-
-	len = ft_strlen(s);
-	if (len == 8 && ft_strncmp(s, "here_doc", len) == 0)
-	{
-		meta->here_doc = 1;
-		return (6);
-	}
-	else
-	{
-		meta->here_doc = 0;
-		return (5);
-	}
 }
 
 /* This function closes all open file descriptors, frees allocated memory

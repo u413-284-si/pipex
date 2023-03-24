@@ -6,7 +6,7 @@
 /*   By: sqiu <sqiu@student.42vienna.com>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/23 14:21:58 by sqiu              #+#    #+#             */
-/*   Updated: 2023/03/23 17:53:15 by sqiu             ###   ########.fr       */
+/*   Updated: 2023/03/24 19:32:11 by sqiu             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,9 +30,8 @@ void	firstborn(t_meta *meta, char **envp)
 	replace_fd(meta->fd_in, meta->cmds[meta->i].fd[1]);
 	do_close(meta->fd_in);
 	do_close(meta->cmds[meta->i].fd[1]);
-	execve(meta->cmds[meta->i].cmd, meta->cmds[meta->i].arg, envp);
-	perror("Failed to execute firstborn.\n");
-	exit(1);
+	if (execve(meta->cmds[meta->i].cmd, meta->cmds[meta->i].arg, envp) < 0)
+		mamma_mia(meta, ERR_FIRST);
 }
 
 /* This function closes all previous pipes except for the last pipe
@@ -54,11 +53,8 @@ void	lastborn(t_meta *meta, char **envp)
 	do_close(meta->cmds[meta->i - 1].fd[1]);
 	replace_fd(meta->cmds[meta->i - 1].fd[0], meta->fd_out);
 	do_close(meta->fd_out);
+	meta->fd_out = -1;
 	do_close(meta->cmds[meta->i - 1].fd[0]);
-	perror(meta->cmds[meta->i].cmd);
-	perror(meta->cmds[meta->i].arg[0]);
-	perror(meta->cmds[meta->i].arg[1]);
-	perror(meta->cmds[meta->i].arg[2]);
 	if (execve(meta->cmds[meta->i].cmd, meta->cmds[meta->i].arg, envp) < 0)
 		mamma_mia(meta, ERR_LAST);
 }
@@ -86,7 +82,6 @@ void	middle_child(t_meta *meta, char **envp)
 	replace_fd(meta->cmds[meta->i - 1].fd[0], meta->cmds[meta->i].fd[1]);
 	do_close(meta->cmds[meta->i - 1].fd[0]);
 	do_close(meta->cmds[meta->i].fd[1]);
-	execve(meta->cmds[meta->i].cmd, meta->cmds[meta->i].arg, envp);
-	perror("Failed to execute command.\n");
-	exit(1);
+	if (execve(meta->cmds[meta->i].cmd, meta->cmds[meta->i].arg, envp) < 0)
+		mamma_mia(meta, ERR_MID);
 }

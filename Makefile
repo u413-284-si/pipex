@@ -6,7 +6,7 @@
 #    By: sqiu <sqiu@student.42vienna.com>           +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/10/05 10:37:52 by sqiu              #+#    #+#              #
-#    Updated: 2023/03/23 17:13:22 by sqiu             ###   ########.fr        #
+#    Updated: 2023/03/24 16:46:58 by sqiu             ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -24,13 +24,15 @@ DEBUG		= -g
 CC 			= cc
 
 INCDIR		= ./inc/
-INCLIST		= pipex.h children.h cleanup.h commands.h error.h initiate.h
+INCLIST		= pipex.h children.h cleanup.h commands.h error.h initiate.h \
+			utils.h
 INCLIST_B	= pipex.h error.h
 INC			= $(addprefix ${INCDIR}, ${INCLIST})
 INC_B		= $(addprefix ${INCDIR}, ${INCLIST_B})
 
 SRCDIR		= ./src/
-SRCLIST		= children.c cleanup.c commands.c error.c initiate.c main.c 
+SRCLIST		= children.c cleanup.c commands.c error.c initiate.c main.c \
+			utils.c
 SRCLIST_B	= error.c 
 SRC			= $(addprefix ${SRCDIR}, ${SRCLIST})
 SRC_B		= $(addprefix ${SRCDIR}, ${SRCLIST_B})
@@ -119,7 +121,11 @@ valgr_b:
 
 #Manual tests
 # ./pipex infile "grep a1" "wc" "wc -l" outfile
-#./pipex infile "grep a1" "wc" "wc -l" outfile; echo $?; cat outfile; rm outfile
+# ./pipex infile "grep a1" "wc" "wc -l" outfile; echo $?; cat outfile; rm outfile
+# < infile grep a1 | wc | wc -l > outfile; echo $?; cat outfile; rm outfile
 
-#< infile grep a1 | wc | wc -l > outfile; echo $?; cat outfile; rm outfile
+# < noperm grep a1 | wc | wc -l > outfile; echo $?; cat outfile; rm outfile
+# ./pipex noperm "grep a1" "wc" "wc -l" outfile; echo $?; cat outfile; rm outfile
 
+# < infile wc | ls asd > outfile; echo $?; cat outfile; rm outfile
+# ./pipex infile "wc" "ls asd" outfile; echo $?; cat outfile; rm outfile
