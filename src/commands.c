@@ -6,7 +6,7 @@
 /*   By: sqiu <sqiu@student.42vienna.com>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/17 11:38:13 by sqiu              #+#    #+#             */
-/*   Updated: 2023/03/24 16:41:12 by sqiu             ###   ########.fr       */
+/*   Updated: 2023/03/29 18:08:38 by sqiu             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,6 +15,7 @@
 #include "../inc/error.h"
 #include "../inc/cleanup.h"
 #include "../inc/children.h"
+#include "../inc/utils.h"
 
 /* This function executes the commands by creating
 
@@ -34,7 +35,7 @@ to it, the children implicitly wait for their predecessor to write
 input to the pipe and then continue their execution. No explicit
 wait call is therefore necessary in the parent process. */
 
-void	exec_cmd(t_meta *meta, char **argv, char **envp)
+void	execute_commands(t_meta *meta, char **argv, char **envp)
 {
 	int	i;
 
@@ -51,7 +52,7 @@ void	exec_cmd(t_meta *meta, char **argv, char **envp)
 		meta->cmds[meta->i].cmd = get_cmd(meta->cmds[meta->i].arg[0], \
 			meta->cmd_paths);
 		if (!meta->cmds[meta->i].cmd)
-			mamma_mia(meta, ERR_CMDEX);
+			perror("command not found");
 		free(meta->cmds[meta->i].arg[0]);
 		meta->cmds[meta->i].arg[0] = meta->cmds[meta->i].cmd;
 		create_child(meta, envp);
@@ -62,95 +63,86 @@ void	exec_cmd(t_meta *meta, char **argv, char **envp)
 	}
 }
 
-/* This function prefixes the appropriate path in front of the command,
-if that is not already the case. To this aim, it rotates through all
-command paths and checks whether the combination with the command is
-correct via 'access'. If so, the command including its path is returned.
-In case of failure to find a working path to the command NULL is returned. */
-
-char	*get_cmd(char *cmd, char **cmd_paths)
-{
-	char	*tmp;
-	char	*rtrn;
-
-	if (cmd[0] == '/')
-		return (cmd);
-	else
-	{
-		while (*cmd_paths)
-		{
-			tmp = ft_strjoin(*cmd_paths, "/");
-			rtrn = ft_strjoin(tmp, cmd);
-			free(tmp);
-			if (access(rtrn, X_OK) == 0)
-			{
-				errno = 0;
-				return (rtrn);
-			}
-			free(rtrn);
-			cmd_paths++;
-		}
-		return (NULL);
-	}
-}
-
-/* This function creates a child by forking and assigns the corresponding
-file descriptors to stdin and stdout depending on the position of the
-command in the chain. 
-	First command: stdin = fd_in, stdout = write end of first pipe
-	In between command: stdin = read end of previous pipe,
-		stdout = write end of current pipe
-	Last command: stdin = read end of previous pipe,
-		stdout = fd_out
-After assigning the fd, all fd in the child process are closed. 
-The command is then called and executed with the new stdin & stdout. */
+/* This function distinguishes between the position of the command needing
+to be executed and creates the pertinent child. */
 
 void	create_child(t_meta *meta, char **envp)
 {
-	meta->pid = fork();
-	if (meta->pid < 0)
+	if (meta->i == 0)
+		raise_first(meta, envp);
+	else if (meta->i == meta->cmd_num - 1)
+		raise_last(meta, envp);
+	else
+		raise_middle(meta, envp);
+}
+
+/* This function creates a child by forking and calls the pertinent
+function which is to be executed by the child. The parent does not wait
+for the child to finish (flag WNOHANG set), but retrieves its pid when
+its done. The parent closes the fd which are duplicated and used by the child.
+*/
+
+void	raise_first(t_meta *meta, char **envp)
+{
+	meta->cmds[meta->i].pid = fork();
+	if (meta->cmds[meta->i].pid < 0)
 		no_senor(meta, ERR_FORK);
-	else if (meta->pid == 0)
-	{
-		if (meta->i == 0)
-			firstborn(meta, envp);
-		else if (meta->i == meta->cmd_num - 1)
-			lastborn(meta, envp);
-		else
-			middle_child(meta, envp);
-	}
-	momma_wait(meta);
+	else if (meta->cmds[meta->i].pid == 0)
+		firstborn(meta, envp);
+	if (waitpid(meta->cmds[meta->i].pid, NULL, WNOHANG) < 0)
+		mamma_mia(meta, ERR_FIRST);
+	if (meta->fd_in > 0 && close(meta->fd_in) < 0)
+		mamma_mia(meta, ERR_CLOSE);
+	meta->fd_in = -1;
+	if (close(meta->cmds[meta->i].fd[1]) < 0)
+		mamma_mia(meta, ERR_CLOSE);
+	meta->cmds[meta->i].fd[1] = -1;
 }
 
-/* This function makes the parent process wait for its child processes and
-retrieve their exit status after exiting to free the kernel. */
+/* This function creates a child by forking and calls the pertinent
+function which is to be executed by the child. The parent waits
+for the child to finish (no flags set) and retrieves its pid when
+its done. This prohibits the parent to terminate before
+the child has finished. 
+The parent closes the fd which are duplicated and used by the child. 
+*/
 
-void	momma_wait(t_meta *meta)
+void	raise_last(t_meta *meta, char **envp)
 {
-	int	stat;
-
-	if (waitpid(meta->pid, &stat, WNOHANG) < 0)
-	{
-		pipinator(meta);
-		mamma_mia(meta, ERR_WAIT);
-	}
-	if (WIFEXITED(stat))
-		meta->exitcode = WEXITSTATUS(stat);
+	meta->cmds[meta->i].pid = fork();
+	if (meta->cmds[meta->i].pid < 0)
+		no_senor(meta, ERR_FORK);
+	else if (meta->cmds[meta->i].pid == 0)
+		lastborn(meta, envp);
+	if (waitpid(meta->cmds[meta->i].pid, NULL, 0) < 0)
+		mamma_mia(meta, ERR_LAST);
+	if (close(meta->fd_out) < 0)
+		mamma_mia(meta, ERR_CLOSE);
+	meta->fd_out = -1;
+	if (close(meta->cmds[meta->i - 1].fd[0]) < 0)
+		mamma_mia(meta, ERR_CLOSE);
+	meta->cmds[meta->i - 1].fd[0] = -1;
 }
 
-/* This function replaces the standard file descriptors
+/* This function creates a child by forking and calls the pertinent
+function which is to be executed by the child. The parent does not wait
+for the child to finish (flag WNOHANG set), but retrieves its pid when
+its done. The parent closes the fd which are duplicated and used by the child.
+*/
 
-* fd 0 (for system stdinput) with input_fd
-* fd 1 (for system stdoutput) with output_fd
-
-allowing data to be read and written to different files.
-The input and output fds are closed after transfering their
-file description to stdin and stdout respectively. */
-
-void	replace_fd(int input_fd, int output_fd)
+void	raise_middle(t_meta *meta, char **envp)
 {
-	if (dup2(input_fd, 0) < 0)
-		terminate(ERR_DUP);
-	if (dup2(output_fd, 1) < 0)
-		terminate(ERR_DUP);
+	meta->cmds[meta->i].pid = fork();
+	if (meta->cmds[meta->i].pid < 0)
+		no_senor(meta, ERR_FORK);
+	else if (meta->cmds[meta->i].pid == 0)
+		middle_child(meta, envp);
+	if (waitpid(meta->cmds[meta->i].pid, NULL, WNOHANG) < 0)
+		mamma_mia(meta, ERR_MID);
+	if (close(meta->cmds[meta->i - 1].fd[0]) < 0)
+		mamma_mia(meta, ERR_CLOSE);
+	meta->cmds[meta->i - 1].fd[0] = -1;
+	if (close(meta->cmds[meta->i].fd[1]) < 0)
+		mamma_mia(meta, ERR_CLOSE);
+	meta->cmds[meta->i].fd[1] = -1;
 }

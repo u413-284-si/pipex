@@ -6,7 +6,7 @@
 #    By: sqiu <sqiu@student.42vienna.com>           +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/10/05 10:37:52 by sqiu              #+#    #+#              #
-#    Updated: 2023/03/24 16:46:58 by sqiu             ###   ########.fr        #
+#    Updated: 2023/03/28 17:27:31 by sqiu             ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -106,7 +106,7 @@ valgr:
 						--show-leak-kinds=all\
 						--trace-children=yes\
 						--log-file=valgrind-out.txt\
-						./pipex infile "grep a1" "wc" "wc -l" outfile
+						./pipex infile "wc" "ls asd" outfile
 				@less ./valgrind-out.txt
 
 valgr_b:			

@@ -6,7 +6,7 @@
 /*   By: sqiu <sqiu@student.42vienna.com>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/16 10:42:02 by sqiu              #+#    #+#             */
-/*   Updated: 2023/03/24 15:44:36 by sqiu             ###   ########.fr       */
+/*   Updated: 2023/03/29 17:34:15 by sqiu             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,8 +47,6 @@ void	init_var(t_meta *meta)
 	meta->here_doc = 0;
 	meta->cmd_num = 0;
 	meta->the_path = "";
-	meta->pid = -1;
-	meta->exitcode = 0;
 }
 
 /* This function opens the given file ready to be read from. If

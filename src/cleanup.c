@@ -6,7 +6,7 @@
 /*   By: sqiu <sqiu@student.42vienna.com>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/20 11:53:10 by sqiu              #+#    #+#             */
-/*   Updated: 2023/03/24 19:24:20 by sqiu             ###   ########.fr       */
+/*   Updated: 2023/03/28 17:24:55 by sqiu             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,11 +25,11 @@ void	cleanup(t_meta *meta)
 		unlink(".tmp_heredoc");
 	do_close(meta->fd_in);
 	do_close(meta->fd_out);
-	free(meta->cmds);
 	i = -1;
 	while (meta->cmd_paths[++i])
 		free(meta->cmd_paths[i]);
 	free(meta->cmd_paths);
+	free(meta->cmds);
 }
 
 /* This function unlinks the temporary heredoc file created and
@@ -61,7 +61,6 @@ void	pipinator(t_meta *meta)
 	int	j;
 
 	j = -1;
-
 	while (++j <= meta->i)
 	{
 		if (j < meta->cmd_num - 1)
