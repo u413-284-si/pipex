@@ -1,18 +1,18 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   error.c                                            :+:      :+:    :+:   */
+/*   error_bonus.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: sqiu <sqiu@student.42vienna.com>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/09 11:13:31 by sqiu              #+#    #+#             */
-/*   Updated: 2023/03/29 19:15:04 by sqiu             ###   ########.fr       */
+/*   Updated: 2023/03/29 18:47:15 by sqiu             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../inc/pipex.h"
-#include "../inc/error.h"
-#include "../inc/cleanup.h"
+#include "../inc/error_bonus.h"
+#include "../inc/cleanup_bonus.h"
 
 /* This function terminates the program and displays an error message 
 according to the point in the program where the error happened. */
@@ -32,6 +32,8 @@ gives out an error message and terminates the program. */
 
 void	abort_mission(t_meta *meta, char *s)
 {
+	if (meta->here_doc)
+		unlink(".tmp_heredoc");
 	do_close(meta->fd_in);
 	do_close(meta->fd_out);
 	free(meta->cmds);

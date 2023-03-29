@@ -1,20 +1,20 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   children.c                                         :+:      :+:    :+:   */
+/*   children_bonus.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: sqiu <sqiu@student.42vienna.com>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/23 14:21:58 by sqiu              #+#    #+#             */
-/*   Updated: 2023/03/29 19:25:49 by sqiu             ###   ########.fr       */
+/*   Updated: 2023/03/29 18:49:15 by sqiu             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../inc/pipex.h"
-#include "../inc/children.h"
-#include "../inc/error.h"
-#include "../inc/cleanup.h"
-#include "../inc/utils.h"
+#include "../inc/children_bonus.h"
+#include "../inc/error_bonus.h"
+#include "../inc/cleanup_bonus.h"
+#include "../inc/utils_bonus.h"
 
 /* This is the first command of the command chain. 
 
@@ -55,7 +55,12 @@ Afterwards these are closed as well and the command is being executed. */
 
 void	lastborn(t_meta *meta, char **envp)
 {
+	int	j;
+
 	do_close(meta->fd_in);
+	j = -1;
+	while (++j < meta->i - 1)
+		plug_pipes(meta, j);
 	do_close(meta->cmds[meta->i - 1].fd[1]);
 	replace_fd(meta->cmds[meta->i - 1].fd[0], meta->fd_out);
 	do_close(meta->fd_out);
@@ -64,5 +69,40 @@ void	lastborn(t_meta *meta, char **envp)
 	{
 		pipinator(meta);
 		mamma_mia(meta, ERR_LAST);
+	}
+}
+
+/* This is a command in between the first and last. 
+
+This function closes all previous pipes except for the last pipe
+connecting the command to its predecessor. The write end of 
+the previous pipe is being closed as well as the read end of
+the current pipe. It assigns the corresponding
+file descriptors to stdin and stdout depending on the position of the
+command in the chain. 
+
+	In between command: stdin = read end of previous pipe,
+		stdout = write end of current pipe
+
+Afterwards these are closed as well and the command is being executed. */
+
+void	middle_child(t_meta *meta, char **envp)
+{
+	int	j;
+
+	do_close(meta->fd_in);
+	do_close(meta->fd_out);
+	j = -1;
+	while (++j < meta->i - 1)
+		plug_pipes(meta, j);
+	do_close(meta->cmds[meta->i - 1].fd[1]);
+	do_close(meta->cmds[meta->i].fd[0]);
+	replace_fd(meta->cmds[meta->i - 1].fd[0], meta->cmds[meta->i].fd[1]);
+	do_close(meta->cmds[meta->i - 1].fd[0]);
+	do_close(meta->cmds[meta->i].fd[1]);
+	if (execve(meta->cmds[meta->i].cmd, meta->cmds[meta->i].arg, envp) < 0)
+	{
+		pipinator(meta);
+		mamma_mia(meta, ERR_MID);
 	}
 }

@@ -1,21 +1,21 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   commands.c                                         :+:      :+:    :+:   */
+/*   commands_bonus.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: sqiu <sqiu@student.42vienna.com>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/17 11:38:13 by sqiu              #+#    #+#             */
-/*   Updated: 2023/03/29 19:27:19 by sqiu             ###   ########.fr       */
+/*   Updated: 2023/03/29 18:48:43 by sqiu             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../inc/pipex.h"
-#include "../inc/commands.h"
-#include "../inc/error.h"
-#include "../inc/cleanup.h"
-#include "../inc/children.h"
-#include "../inc/utils.h"
+#include "../inc/commands_bonus.h"
+#include "../inc/error_bonus.h"
+#include "../inc/cleanup_bonus.h"
+#include "../inc/children_bonus.h"
+#include "../inc/utils_bonus.h"
 
 /* This function executes the commands by creating
 
@@ -46,7 +46,7 @@ void	execute_commands(t_meta *meta, char **argv, char **envp)
 			if (pipe(meta->cmds[meta->i].fd) < 0)
 				no_senor(meta, ERR_PIPE);
 		meta->cmds[meta->i].arg = \
-			ft_split(argv[2 + meta->i], ' ');
+			ft_split(argv[2 + meta->here_doc + meta->i], ' ');
 		if (!meta->cmds[meta->i].arg)
 			no_senor(meta, ERR_CMD);
 		meta->cmds[meta->i].cmd = get_cmd(meta->cmds[meta->i].arg[0], \
@@ -72,6 +72,8 @@ void	create_child(t_meta *meta, char **envp)
 		raise_first(meta, envp);
 	else if (meta->i == meta->cmd_num - 1)
 		raise_last(meta, envp);
+	else
+		raise_middle(meta, envp);
 }
 
 /* This function creates a child by forking and calls the pertinent
@@ -120,4 +122,27 @@ void	raise_last(t_meta *meta, char **envp)
 	if (close(meta->cmds[meta->i - 1].fd[0]) < 0)
 		mamma_mia(meta, ERR_CLOSE);
 	meta->cmds[meta->i - 1].fd[0] = -1;
+}
+
+/* This function creates a child by forking and calls the pertinent
+function which is to be executed by the child. The parent does not wait
+for the child to finish (flag WNOHANG set), but retrieves its pid when
+its done. The parent closes the fd which are duplicated and used by the child.
+*/
+
+void	raise_middle(t_meta *meta, char **envp)
+{
+	meta->cmds[meta->i].pid = fork();
+	if (meta->cmds[meta->i].pid < 0)
+		no_senor(meta, ERR_FORK);
+	else if (meta->cmds[meta->i].pid == 0)
+		middle_child(meta, envp);
+	if (waitpid(meta->cmds[meta->i].pid, NULL, WNOHANG) < 0)
+		mamma_mia(meta, ERR_MID);
+	if (close(meta->cmds[meta->i - 1].fd[0]) < 0)
+		mamma_mia(meta, ERR_CLOSE);
+	meta->cmds[meta->i - 1].fd[0] = -1;
+	if (close(meta->cmds[meta->i].fd[1]) < 0)
+		mamma_mia(meta, ERR_CLOSE);
+	meta->cmds[meta->i].fd[1] = -1;
 }

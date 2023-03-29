@@ -1,18 +1,18 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   cleanup.c                                          :+:      :+:    :+:   */
+/*   cleanup_bonus.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: sqiu <sqiu@student.42vienna.com>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/20 11:53:10 by sqiu              #+#    #+#             */
-/*   Updated: 2023/03/29 19:13:56 by sqiu             ###   ########.fr       */
+/*   Updated: 2023/03/29 18:47:04 by sqiu             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../inc/pipex.h"
-#include "../inc/cleanup.h"
-#include "../inc/error.h"
+#include "../inc/cleanup_bonus.h"
+#include "../inc/error_bonus.h"
 
 /* This function closes remaining file descriptors and frees allocated 
 memory space. */
@@ -21,6 +21,8 @@ void	cleanup(t_meta *meta)
 {
 	int	i;
 
+	if (meta->here_doc)
+		unlink(".tmp_heredoc");
 	do_close(meta->fd_in);
 	do_close(meta->fd_out);
 	i = -1;
@@ -28,6 +30,15 @@ void	cleanup(t_meta *meta)
 		free(meta->cmd_paths[i]);
 	free(meta->cmd_paths);
 	free(meta->cmds);
+}
+
+/* This function unlinks the temporary heredoc file created and
+terminates the program. */
+
+void	unlink_heredoc(char *s)
+{
+	unlink(".tmp_heredoc");
+	terminate(s);
 }
 
 /* This function performs the closing of a file and returns an error

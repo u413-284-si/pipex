@@ -1,21 +1,23 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   children.h                                         :+:      :+:    :+:   */
+/*   utils_bonus.h                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: sqiu <sqiu@student.42vienna.com>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/03/23 14:22:11 by sqiu              #+#    #+#             */
-/*   Updated: 2023/03/29 19:13:15 by sqiu             ###   ########.fr       */
+/*   Created: 2023/03/24 15:02:48 by sqiu              #+#    #+#             */
+/*   Updated: 2023/03/29 18:39:50 by sqiu             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef CHILDREN_H
-# define CHILDREN_H
+#ifndef UTILS_BONUS_H
+# define UTILS_BONUS_H
 
 /* ====== FUNCTIONS ====== */
 
-void	firstborn(t_meta *meta, char **envp);
-void	lastborn(t_meta *meta, char **envp);
+char	*get_path(char **envp);
+int		input_check(char *s, t_meta *meta);
+void	replace_fd(int input_fd, int output_fd);
+char	*get_cmd(char *cmd, char **cmd_paths);
 
 #endif
