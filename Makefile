@@ -6,7 +6,7 @@
 #    By: sqiu <sqiu@student.42vienna.com>           +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/10/05 10:37:52 by sqiu              #+#    #+#              #
-#    Updated: 2023/03/29 21:11:14 by sqiu             ###   ########.fr        #
+#    Updated: 2023/03/29 21:20:21 by sqiu             ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -109,7 +109,7 @@ valgr:
 						--trace-children=yes\
 						--track-fds=yes\
 						--log-file=valgrind-out.txt\
-						./pipex infile "wc" "ls" outfile
+						./pipex infile "wc" "cat" outfile
 				@less ./valgrind-out.txt
 
 valgr_b:			
