@@ -6,7 +6,7 @@
 /*   By: sqiu <sqiu@student.42vienna.com>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/16 10:42:02 by sqiu              #+#    #+#             */
-/*   Updated: 2023/03/29 19:39:39 by sqiu             ###   ########.fr       */
+/*   Updated: 2023/03/31 19:16:20 by sqiu             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -90,17 +90,19 @@ void	here_doc(t_meta *meta, char *s)
 {
 	int		fd;
 	char	*buf;
+	size_t	len;
 
 	fd = open(".tmp_heredoc", O_CREAT | O_WRONLY | O_TRUNC, 0644);
 	if (fd < 3)
 		terminate(ERR_HEREDOC);
+	len = ft_strlen(s);
 	while (1)
 	{
 		write(1, "pipe heredoc> ", 14);
 		buf = get_next_line(0);
 		if (!buf)
 			unlink_heredoc(ERR_GNL);
-		if (ft_strncmp(s, buf, ft_strlen(s)) == 0)
+		if ((ft_strncmp(s, buf, len) == 0) && *(buf + len) == '\n')
 			break ;
 		write(fd, buf, ft_strlen(buf));
 		free(buf);
