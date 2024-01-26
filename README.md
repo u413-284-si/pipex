@@ -47,7 +47,7 @@ The goal of the project is to familiarise oneself with
 ## Installation
 
 ```
-git clone https://github.com/u413-284-si/pipex pipex
+git clone --recursive https://github.com/u413-284-si/pipex pipex
 cd pipex
 make
 ./pipex infile "<cmd 1>" "<cmd 2>" outfile
